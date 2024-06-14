@@ -10,14 +10,6 @@ export const employeeDummyData: Employee[] = [
     gender: Gender.MALE,
   },
   {
-    id: 91,
-    name: "KSRajawat",
-    age: "24",
-    role: Role.ADMIN,
-    dob: "27/03/2000",
-    gender: Gender.MALE,
-  },
-  {
     id: 92,
     name: "Roy",
     age: "25",
@@ -25,6 +17,7 @@ export const employeeDummyData: Employee[] = [
     dob: "27/03/2000",
     gender: Gender.MALE,
   },
+
   {
     id: 93,
     name: "Durgesh",
@@ -39,6 +32,14 @@ export const employeeDummyData: Employee[] = [
     age: "38",
     role: Role.ADMIN,
     dob: "27/03/1986",
+    gender: Gender.MALE,
+  },
+  {
+    id: 91,
+    name: "KSRajawat",
+    age: "24",
+    role: Role.GUEST,
+    dob: "27/03/2000",
     gender: Gender.MALE,
   },
   {

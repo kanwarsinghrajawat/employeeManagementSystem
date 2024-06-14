@@ -18,6 +18,7 @@ import {
   handleFilteredEmployee,
   setmodalHandler,
 } from "@/app/redux/slices/employeeSlice";
+import NoDataFound from "./NoDataFound";
 
 export enum Gender {
   MALE = "Male",
@@ -52,14 +53,14 @@ const columnHelpers = createColumnHelper<Employee>();
 
 const Employees = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
-  // const [page, setPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
   const dispatch = useDispatch();
   const employees = useSelector((state: RootState) => state.data);
   const searchKey: string = employees.searchString;
   const employeeFilteredData = employees.filteredEmployee;
   const data: Employee[] = employees.employees;
+  const pageSize = 10;
 
-  console.log(employees);
   const employeesDetailData = searchKey !== "" ? employeeFilteredData : data;
 
   useEffect(() => {
@@ -75,11 +76,11 @@ const Employees = () => {
     }
   }, [searchKey]);
 
-  // const pageSize = 10;
-
-  // const startIndex = page * pageSize;
-  // const endIndex = startIndex + pageSize;
-  // const slicedData = data.slice(startIndex, endIndex);
+  const paginatedData = useMemo(() => {
+    const startIndex = currentPage * pageSize;
+    const endIndex = startIndex + pageSize;
+    return employeesDetailData.slice(startIndex, endIndex);
+  }, [currentPage, employeeFilteredData, employeesDetailData]);
 
   const columns = useMemo(
     () => [
@@ -129,8 +130,7 @@ const Employees = () => {
 
   const table = useReactTable({
     columns,
-    data: employeesDetailData,
-    // data: slicedData,
+    data: paginatedData,
     state: {
       sorting,
     },
@@ -142,8 +142,6 @@ const Employees = () => {
   return (
     <>
       <div className="h-[calc(100vh-19rem)] overflow-auto">
-        {/* <div className="h-screen sm:h-auto sm:min-h-0 sm:flex-grow overflow-scroll"> */}
-
         <table className="min-w-full divide-y divide-gray-200 dark:divide-neutral-300">
           <thead>
             {table.getHeaderGroups().map((headerGroup, index) => (
@@ -190,67 +188,55 @@ const Employees = () => {
               </tr>
             ))}
           </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-neutral-300">
-            {table.getRowModel().rows.map((row, index) => (
-              <tr key={index}>
-                {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 "
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
+          {employeesDetailData.length <= 0 ? (
+            <NoDataFound />
+          ) : (
+            <tbody className="divide-y divide-gray-200 dark:divide-neutral-300">
+              {table.getRowModel().rows.map((row, index) => (
+                <tr key={index}>
+                  {row.getVisibleCells().map((cell) => (
+                    <td
+                      key={cell.id}
+                      className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 "
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          )}
         </table>
-
-        {/* <div className="flex items-center justify-center mt-4 space-x-4">
-        <button
-          className={`px-4 py-2 rounded-lg bg-blue-500 text-white ${
-            page === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"
-          }`}
-          onClick={() => setPage(page - 1)}
-          disabled={page === 0}
-        >
-          Previous Page
-        </button>
-        <button
-          className={`px-4 py-2 rounded-lg bg-blue-500 text-white ${
-            endIndex >= data.length
-              ? "opacity-50 cursor-not-allowed"
-              : "hover:bg-blue-600"
-          }`}
-          onClick={() => setPage(page + 1)}
-          disabled={endIndex >= data.length}
-        >
-          Next Page
-        </button>
-        <span className="text-gray-600">
-          Total Pages: {Math.ceil(data.length / pageSize)}
-        </span>
-      </div> */}
       </div>
-      <div className="flex items-center justify-center mt-4 space-x-4">
+
+      <div className="flex items-center justify-center mt-4 space-x-4 xs:flex-col xs:gap-4">
         <button
-          className={`px-4 py-2 rounded-lg bg-blue-500 text-white ${
-            0 === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"
+          className={`px-4 py-2 rounded-lg bg-blue-500 text-white  ${
+            currentPage === 0
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-blue-600"
           }`}
+          onClick={() => setCurrentPage(currentPage - 1)}
+          disabled={currentPage === 0}
         >
           Previous Page
         </button>
         <button
           className={`px-4 py-2 rounded-lg bg-blue-500 text-white ${
-            0 >= data.length
+            paginatedData.length < pageSize
               ? "opacity-50 cursor-not-allowed"
               : "hover:bg-blue-600"
           }`}
+          onClick={() => setCurrentPage(currentPage + 1)}
+          disabled={paginatedData.length < pageSize}
         >
           Next Page
         </button>
         <span className="text-gray-600">
-          Total Pages: {Math.ceil(data.length)}
+          Total Pages: {Math.ceil(employeesDetailData.length / pageSize)}
         </span>
       </div>
     </>
