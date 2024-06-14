@@ -1,6 +1,6 @@
 Employee Management System
 
-HOW TO START
+GETTING STARTED
 
 - pnpm i
 - pnpm run dev

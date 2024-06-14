@@ -30,7 +30,7 @@ const Search = () => {
         <FiSearch />
         <input
           type="text"
-          placeholder="Search"
+          placeholder="Search for name or role"
           className="w-full pr-10 outline-none"
           value={searchTerm}
           onChange={handleInputChange}
