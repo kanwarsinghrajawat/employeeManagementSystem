@@ -102,7 +102,7 @@ const Form = ({}) => {
 
       dispatch(employeeIdUpdate(null));
     },
-    [employeesData, showEditData]
+    [dispatch, employeesData, showEditData]
   );
 
   return (

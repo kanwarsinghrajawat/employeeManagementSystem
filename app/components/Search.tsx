@@ -18,7 +18,7 @@ const Search = () => {
     }, 500);
 
     return () => clearTimeout(timeoutId);
-  }, [searchTerm]);
+  }, [dispatch, searchTerm]);
 
   const handleInputChange = (e: any) => {
     setSearchTerm(e.target.value);

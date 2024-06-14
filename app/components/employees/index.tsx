@@ -74,13 +74,13 @@ const Employees = () => {
 
       dispatch(handleFilteredEmployee(filteredData));
     }
-  }, [searchKey]);
+  }, [data, dispatch, searchKey]);
 
   const paginatedData = useMemo(() => {
     const startIndex = currentPage * pageSize;
     const endIndex = startIndex + pageSize;
     return employeesDetailData.slice(startIndex, endIndex);
-  }, [currentPage, employeeFilteredData, employeesDetailData]);
+  }, [currentPage, employeesDetailData]);
 
   const columns = useMemo(
     () => [
